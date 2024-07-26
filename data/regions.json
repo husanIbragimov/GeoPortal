@@ -1,0 +1,74 @@
+{
+  "regions": [
+    {
+      "name": "Andijan",
+      "latitude": 40.7821,
+      "longitude": 72.3442
+    },
+    {
+      "name": "Bukhara",
+      "latitude": 39.7747,
+      "longitude": 64.4286
+    },
+    {
+      "name": "Fergana",
+      "latitude": 40.3895,
+      "longitude": 71.7864
+    },
+    {
+      "name": "Jizzakh",
+      "latitude": 40.1257,
+      "longitude": 67.8827
+    },
+    {
+      "name": "Karakalpakstan",
+      "latitude": 42.3408,
+      "longitude": 59.5957
+    },
+    {
+      "name": "Kashkadarya",
+      "latitude": 38.861,
+      "longitude": 65.793
+    },
+    {
+      "name": "Khorezm",
+      "latitude": 41.545,
+      "longitude": 60.6316
+    },
+    {
+      "name": "Namangan",
+      "latitude": 41.000,
+      "longitude": 71.6692
+    },
+    {
+      "name": "Navoiy",
+      "latitude": 40.0845,
+      "longitude": 65.3793
+    },
+    {
+      "name": "Samarkand",
+      "latitude": 39.627,
+      "longitude": 66.974
+    },
+    {
+      "name": "Sirdaryo",
+      "latitude": 40.2184,
+      "longitude": 68.7947
+    },
+    {
+      "name": "Surkhandarya",
+      "latitude": 37.8282,
+      "longitude": 67.2736
+    },
+    {
+      "name": "Tashkent",
+      "latitude": 41.2995,
+      "longitude": 69.2401
+    },
+    {
+      "name": "Tashkent City",
+      "latitude": 41.3111,
+      "longitude": 69.2797
+    }
+  ]
+}
