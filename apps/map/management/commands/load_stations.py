@@ -4,7 +4,7 @@ import os
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from apps.gis.models import EVChargingLocation
+from apps.map.models import EVChargingLocation
 
 
 class Command(BaseCommand):

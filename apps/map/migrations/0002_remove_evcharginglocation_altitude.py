@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('gis', '0001_initial'),
+        ('map', '0001_initial'),
     ]
 
     operations = [
