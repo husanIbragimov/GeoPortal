@@ -10,10 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
+from environs import Env
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# env
+env = Env()
+env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -26,10 +32,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+# if os.name == 'nt':
+#     VENV_BASE = os.environ['VIRTUAL_ENV']
+#     os.environ['PATH'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo') + ';' + os.environ['PATH']
+#     os.environ['PROJ_LIB'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo\\data\\proj') + ';' + os.environ['PATH']
+
 # Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    # 'django.contrib.gis',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -37,8 +49,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'apps.common',
-    'apps.gis',
+    'apps.map',
 ]
+
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (41.3775, 64.5853),
+    'DEFAULT_ZOOM': 6,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -79,6 +96,18 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+#         'NAME': "gisdb",
+#         'USER': "husan",
+#         'PASSWORD': "123",
+#         'HOST': "localhost",
+#         'PORT': "5432",
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

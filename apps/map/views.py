@@ -2,14 +2,14 @@ import folium
 from django.shortcuts import render
 from folium.plugins import FastMarkerCluster
 
-from apps.gis.models import EVChargingLocation
+from apps.map.models import EVChargingLocation
 from django.db.models import Avg
 
 
 def home_page(request):
-    avg_lat = EVChargingLocation.objects.aggregate(avg=Avg('latitude'))['avg']
-    print(avg_lat)
-    stations = EVChargingLocation.objects.exclude(latitude__gt=avg_lat)
+    # avg_lat = EVChargingLocation.objects.aggregate(avg=Avg('latitude'))['avg']
+    # print(avg_lat)
+    stations = EVChargingLocation.objects.all().order_by("name")
 
     m = folium.Map(location=[41.3775, 64.5853], zoom_start=6)
 
