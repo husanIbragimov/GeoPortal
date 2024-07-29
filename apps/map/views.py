@@ -3,9 +3,10 @@ import os
 
 import folium
 from django.shortcuts import render
+from folium.plugins import MousePosition
 from shapely.geometry import shape
 
-from core.settings import GEOJSON_URL, LEAFLET_CONFIG
+from core.settings import GEOJSON_URL
 
 
 def home_page(request):
@@ -38,14 +39,15 @@ def home_page(request):
             'weight': 0.5,  # Border width in pixels
             'fillOpacity': 0.3  # Fill opacity
         },
+        highlight_function=lambda x: {'weight': 2, 'color': 'blue'},
         tooltip=folium.GeoJsonTooltip(
             fields=["region_name", "district", "parent_code"],
             aliases=["Region Name", "District", "OKPO"],
-            localize=True
+            localize=True,
         )
     ).add_to(m)
 
-    # m.save('polygon_map.html')
+    MousePosition().add_to(m)
 
     context = {
         'area': area,
