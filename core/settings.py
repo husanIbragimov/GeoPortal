@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
-from environs import Env
 from pathlib import Path
+
+from environs import Env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,23 +26,19 @@ env.read_env()
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-xc$i%avc4gz$n16n)&bb1k-^k_x$3+pjow4v=45&mx@m^ycif5'
+SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=False)  # True
 
 ALLOWED_HOSTS = ["*"]
 
-# if os.name == 'nt':
-#     VENV_BASE = os.environ['VIRTUAL_ENV']
-#     os.environ['PATH'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo') + ';' + os.environ['PATH']
-#     os.environ['PROJ_LIB'] = os.path.join(VENV_BASE, 'Lib\\site-packages\\osgeo\\data\\proj') + ';' + os.environ['PATH']
+GEOJSON_URL = env.str("GEOJSON_URL")
 
 # Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    # 'django.contrib.gis',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -97,15 +94,14 @@ DATABASES = {
     }
 }
 
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-#         'NAME': "gisdb",
-#         'USER': "husan",
-#         'PASSWORD': "123",
-#         'HOST': "localhost",
-#         'PORT': "5432",
+#         'NAME': env.str("DB_NAME"),
+#         'USER': env.str("DB_USER"),
+#         'PASSWORD': env.str("DB_PASSWORD"),
+#         'HOST': env.str("DB_HOST"),
+#         'PORT': env.str("DB_PORT"),
 #     }
 # }
 
