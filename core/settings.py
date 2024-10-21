@@ -102,6 +102,14 @@ DATABASES = {
 #         'PASSWORD': env.str("DB_PASSWORD"),
 #         'HOST': env.str("DB_HOST"),
 #         'PORT': env.str("DB_PORT"),
+#     },
+#     'geojson': {
+#         'ENGINE': 'django.db.backends.mongodb',
+#         'NAME': env.str("MONGO_DB_NAME"),
+#         'USER': env.str("MONGO_DB_USER"),
+#         'PASSWORD': env.str("MONGO_DB_PASSWORD"),
+#         'HOST': env.str("MONGO_DB_HOST"),
+#         'PORT': env.str("MONGO_DB_PORT"),
 #     }
 # }
 

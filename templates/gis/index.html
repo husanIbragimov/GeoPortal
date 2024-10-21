@@ -2,11 +2,15 @@
 
 {% block content %}
 
+    <style>
+        .leaflet-safari .leaflet-tile-container {
+            height: 100% !important;
+            width: 100% !important;
+            -webkit-transform-origin: 0 0;
+        }
+    </style>
+
     <div class="container">
-        <div class="text-center">
-            <h2>Uzbekistan</h2>
-            <span>The area of the selected region is: {{ area }} square units.</span>
-        </div>
         <div id="map" style="width: 100%; height: 100%">
             {{ map|safe }}
         </div>
