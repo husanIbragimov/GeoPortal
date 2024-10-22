@@ -87,31 +87,27 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-#         'NAME': env.str("DB_NAME"),
-#         'USER': env.str("DB_USER"),
-#         'PASSWORD': env.str("DB_PASSWORD"),
-#         'HOST': env.str("DB_HOST"),
-#         'PORT': env.str("DB_PORT"),
-#     },
-#     'geojson': {
-#         'ENGINE': 'django.db.backends.mongodb',
-#         'NAME': env.str("MONGO_DB_NAME"),
-#         'USER': env.str("MONGO_DB_USER"),
-#         'PASSWORD': env.str("MONGO_DB_PASSWORD"),
-#         'HOST': env.str("MONGO_DB_HOST"),
-#         'PORT': env.str("MONGO_DB_PORT"),
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': env.str("MONGO_DB_NAME"),
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'host': env.str("MONGO_DB_HOST"),
+            'port': int(env.str("MONGO_DB_PORT")),
+            'username': env.str("MONGO_DB_USER"),
+            'password': env.str("MONGO_DB_PASSWORD"),
+            'authSource': 'admin',
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
