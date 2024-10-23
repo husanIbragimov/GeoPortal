@@ -1,74 +1,122 @@
-{
-  "regions": [
-    {
-      "name": "Andijan",
+[
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Andijon viloyati",
+      "parent_code": 1729,
       "latitude": 40.7821,
       "longitude": 72.3442
-    },
-    {
-      "name": "Bukhara",
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Buxoro viloyati",
+      "parent_code": 1731,
       "latitude": 39.7747,
       "longitude": 64.4286
-    },
-    {
-      "name": "Fergana",
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Farg'ona viloyati",
+      "parent_code": 1730,
       "latitude": 40.3895,
       "longitude": 71.7864
-    },
-    {
-      "name": "Jizzakh",
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Jizzax viloyati",
+      "parent_code": 1732,
       "latitude": 40.1257,
       "longitude": 67.8827
-    },
-    {
-      "name": "Karakalpakstan",
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Qoraqalpog'iston Respublikasi",
+      "parent_code": 1733,
       "latitude": 42.3408,
       "longitude": 59.5957
-    },
-    {
-      "name": "Kashkadarya",
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Qashqadaryo viloyati",
+      "parent_code": 1734,
       "latitude": 38.861,
       "longitude": 65.793
-    },
-    {
-      "name": "Khorezm",
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Xorazm viloyati",
+      "parent_code": 1735,
       "latitude": 41.545,
       "longitude": 60.6316
-    },
-    {
-      "name": "Namangan",
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Namangan viloyati",
+      "parent_code": 1736,
       "latitude": 41.000,
       "longitude": 71.6692
-    },
-    {
-      "name": "Navoiy",
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Navoiy viloyati",
       "latitude": 40.0845,
       "longitude": 65.3793
-    },
-    {
-      "name": "Samarkand",
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Samarqand viloyati",
       "latitude": 39.627,
       "longitude": 66.974
-    },
-    {
-      "name": "Sirdaryo",
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Sirdaryo viloyati",
       "latitude": 40.2184,
       "longitude": 68.7947
-    },
-    {
-      "name": "Surkhandarya",
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Surxondaro viloyati",
       "latitude": 37.8282,
       "longitude": 67.2736
-    },
-    {
-      "name": "Tashkent",
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Toshkent viloyati",
       "latitude": 41.2995,
       "longitude": 69.2401
-    },
-    {
-      "name": "Tashkent City",
+    }
+  },
+  {
+    "type": "Feature",
+    "properties": {
+      "region_name": "Toshkent shahri",
       "latitude": 41.3111,
       "longitude": 69.2797
     }
-  ]
-}
+  }
+]

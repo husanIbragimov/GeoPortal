@@ -1,14 +1,16 @@
 import json
 import os
+from linecache import cache
 
 import folium
 from django.shortcuts import render
 from folium.plugins import MousePosition
 from shapely.geometry import shape
-
+from django.views.decorators.cache import cache_page
 from core.settings import GEOJSON_URL
 
 
+@cache_page(60 * 15)
 def home_page(request):
     # Define the path to your GeoJSON file
     geojson_file_path = os.path.join('data', GEOJSON_URL)

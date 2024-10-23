@@ -11,22 +11,24 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+from os import environ
 from pathlib import Path
 
-from environs import Env
+from environ import Env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+env = Env()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # env
-env = Env()
-env.read_env()
+env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str("SECRET_KEY")
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)  # True
@@ -96,16 +98,13 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': env.str("MONGO_DB_NAME"),
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': env.str("MONGO_DB_HOST"),
-            'port': int(env.str("MONGO_DB_PORT")),
-            'username': env.str("MONGO_DB_USER"),
-            'password': env.str("MONGO_DB_PASSWORD"),
-            'authSource': 'admin',
-        }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env("DB_NAME"),
+        'USER': env("DB_USER"),
+        'PASSWORD': env("DB_PASSWORD"),
+        'HOST': env("DB_HOST"),
+        'PORT': env("DB_PORT"),
+        "TEST": {"MIGRATE": False}
     }
 }
 
