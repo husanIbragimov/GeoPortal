@@ -13,10 +13,10 @@ class MongoDB:
         self.collection.insert_one(data)
 
     def find(self, query) -> List[Dict[str, Any]]:
-        return self.collection.find(query).to_list(length=None)
+        return self.collection.find(query).to_list()
 
     def find_all(self) -> List[Dict[str, Any]]:
-        return self.collection.find().to_list(length=None)
+        return self.collection.find().to_list()
 
     def delete(self, query):
         self.collection.delete_one(query)
