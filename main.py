@@ -40,7 +40,6 @@ async def get_districts() -> List[Dict[str, Any]]:
 @app.get("/district/{parent_code}")
 async def get_district(parent_code: int) -> List[Dict[str, Any]]:
     district = District(document={})
-    print(district)
     data = await district.get(parent_code)
     if not data:
         raise HTTPException(status_code=404, detail="District not found")
