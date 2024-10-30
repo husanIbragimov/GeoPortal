@@ -43,3 +43,8 @@ class Region(Document):
 class District(Document):
     def __init__(self, document: Dict[str, Any]):
         super().__init__(document, table="districts")
+
+
+class RegionDocument(Document):
+    def __init__(self, document: Dict[str, Any]):
+        super().__init__(document, table="regions1")

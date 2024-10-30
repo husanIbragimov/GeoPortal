@@ -1,11 +1,12 @@
 import json
+from pickle import FRAME
 from typing import List, Dict, Any
-from urllib.error import HTTPError
 
 from bson import ObjectId
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
-from gis.documents import Region, District
+from gis.documents import Region, District, RegionDocument
 
 
 class MongoEncoder(json.JSONEncoder):
@@ -20,6 +21,22 @@ app = FastAPI(
     version="0.1.0",
     docs_url="/docs",
     debug=True,
+)
+
+ORIGINS = (
+    "http://localhost",
+    "http://localhost:8080",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "*"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
