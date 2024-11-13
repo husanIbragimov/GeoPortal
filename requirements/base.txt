@@ -1,2 +1,11 @@
-fastapi
+alembic==1.14.0
+fastapi==0.115.3
 folium==0.17.0
+psycopg2-binary==2.9.10
+pymongo==4.9.2
+shapely==2.0.6
+SQLAlchemy==2.0.36
+unicorn==0.32.0
+polars==1.12.0
+pydantic==2.9.2
+requests==2.32.3
