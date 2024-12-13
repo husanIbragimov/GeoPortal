@@ -6,7 +6,6 @@ from pydantic import BaseModel, ValidationError
 class SubSphereSchema(BaseModel):
     id: int
     title: str
-    icon: Optional[str] = None
     is_active: bool
 
     class Config:

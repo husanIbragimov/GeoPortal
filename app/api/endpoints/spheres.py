@@ -1,3 +1,4 @@
+import requests
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -44,3 +45,16 @@ def create_sphere(sphere: SphereCreateSchema, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_sphere)
     return db_sphere
+
+
+@router.get("/all_spheres", response_model=List[SphereSchema])
+def read_all_spheres(db: Session = Depends(get_db)):
+    spheres = db.query(Sphere).filter(Sphere.parent_id == None).all()
+    return spheres
+
+
+@router.get("/number_of_births")
+def get_number_of_births(db: Session = Depends(get_db)):
+    url = "https://api.siat.stat.uz/media/uploads/sdmx/sdmx_data_223.json"
+    response = requests.get(url).json()
+    return response
