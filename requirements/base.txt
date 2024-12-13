@@ -3,6 +3,7 @@ fastapi==0.115.3
 folium==0.17.0
 psycopg2-binary==2.9.10
 pymongo==4.9.2
+python-jose==3.3.0
 shapely==2.0.6
 SQLAlchemy==2.0.36
 unicorn==0.32.0

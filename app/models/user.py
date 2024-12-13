@@ -1,3 +1,4 @@
+import bcrypt
 from sqlalchemy import Column, String, Boolean, TIMESTAMP
 from sqlalchemy.sql.expression import text
 from app.db.session import Base

@@ -1,5 +1,9 @@
 from fastapi import FastAPI
-from app.api.endpoints import spheres, coordinates
+from app.api.endpoints import (
+    auth,
+    spheres,
+    coordinates,
+)
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 
@@ -29,3 +33,4 @@ app.add_middleware(
 
 app.include_router(spheres.router, prefix="/v1/api", tags=["spheres"])
 app.include_router(coordinates.router, prefix="/v1/api", tags=["coordinates"])
+app.include_router(auth.router, prefix="/v1/api", tags=["auth"])
