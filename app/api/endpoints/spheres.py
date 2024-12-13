@@ -1,12 +1,13 @@
 import requests
-from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session, joinedload
-
-from app.models.sphere import Sphere
-from app.schemas.spheres import SphereCreateSchema, SphereSchema
 from . import get_db
+from typing import List
+from app.core.config import settings
+from app.models.sphere import Sphere
+from sqlalchemy.orm import Session, joinedload
+from fastapi import APIRouter, Depends, HTTPException
+from app.schemas.spheres import SphereCreateSchema, SphereSchema
+
 
 router = APIRouter(
     tags=["spheres"],
@@ -55,6 +56,5 @@ def read_all_spheres(db: Session = Depends(get_db)):
 
 @router.get("/number_of_births")
 def get_number_of_births(db: Session = Depends(get_db)):
-    url = "https://api.siat.stat.uz/media/uploads/sdmx/sdmx_data_223.json"
-    response = requests.get(url).json()
+    response = requests.get(settings.STAT_URI).json()
     return response
