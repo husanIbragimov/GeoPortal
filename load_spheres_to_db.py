@@ -51,6 +51,8 @@ class LoadSpheresToDB:
                 sphere_id = self.insert_sphere(child['name'], child['icon_svg'], None)
                 for sub_child in child["children"][0]["children"]:
                     self.insert_sphere(sub_child['name'], sub_child['icon_svg'], sphere_id)
+        
+        return "Success"
     
     def get_load_svg_to_db(self):
         response = requests.get(self.url)
