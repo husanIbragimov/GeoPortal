@@ -30,6 +30,8 @@
     Here's how you can update your __env.py__ file to combine the metadata from multiple __Base__ classes correctly:
 
     ```python
+    from sqlalchemy import MetaData # add this import
+
     # add your model's MetaData object here
     # for 'autogenerate' support
     # from myapp import mymodel
