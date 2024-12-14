@@ -1,30 +1,40 @@
 import random
-from pydantic import BaseModel, EmailStr
 from typing import Optional
+
+from app.models import GenderEnum
+from pydantic import BaseModel, EmailStr, validator
 
 
 class UserRegister(BaseModel):
     username: str
     password: str
-    password2: str
     email: EmailStr
     full_name: str
-    gender: Optional[str] = random.choice(["Male", "Female"])
+    gender: Optional[GenderEnum] = GenderEnum.male
 
     class Config:
         from_attributes = True
-    
-    def validate(self):
-        if self.password != self.password2:
-            raise ValueError("Password and Confirm Password must match")
-        return self
+
+    @validator('gender', pre=True, always=True)
+    def validate_gender(cls, v):
+        if isinstance(v, str):
+            v = v.lower()  # Normalize to lowercase
+        return GenderEnum(v)
+
+
+class TokenSchema(BaseModel):
+    refresh: str
+    access: str
+    token_type: str
+
 
 class UserLogin(BaseModel):
     username: str
     password: str
 
-class UserResponse(BaseModel):
-    id: str
+
+class UserSchema(BaseModel):
+    uuid: str
     username: str
     email: EmailStr
     full_name: str

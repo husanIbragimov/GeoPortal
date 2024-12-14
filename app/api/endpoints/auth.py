@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi import status
 from sqlalchemy.orm import Session
+from fastapi.security import OAuth2PasswordRequestForm
 
-from app.api.auth.authentication import create_access_token, get_current_user
+from app.api.auth.authentication import tokens, get_current_user
 from app.core.utils import hash_password, verify_password
 from app.models import User
-from app.schemas.auth import UserRegister, UserLogin, UserResponse
+from app.schemas.auth import UserRegister, UserLogin, UserSchema, TokenSchema
 from . import get_db
 
 router = APIRouter(
@@ -14,10 +15,12 @@ router = APIRouter(
 )
 
 
-@router.post("/register/", response_model=UserRegister)
+@router.post("/register/", response_model=UserRegister, status_code=status.HTTP_201_CREATED)
 async def register(user_create: UserRegister, db: Session = Depends(get_db)):
-    # Check if username or email already exists
-    db_user = db.query(User).filter((User.username == user_create.username) | (User.email == user_create.email)).first()
+    db_user = db.query(User).filter(
+        (User.username == user_create.username) |
+        (User.email == user_create.email)
+    ).first()
     if db_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username or email already registered")
 
@@ -35,23 +38,22 @@ async def register(user_create: UserRegister, db: Session = Depends(get_db)):
     return new_user
 
 
-@router.post("/login/", response_model=UserLogin)
-async def login(user_login: UserLogin, db: Session = Depends(get_db)):
-    # Fetch user from DB
-    db_user = db.query(User).filter(User.username == user_login.username).first()
+@router.post("/login/", response_model=TokenSchema)
+async def login(
+    db: Session = Depends(get_db),
+    form_data: UserLogin = Depends()
+):
+    db_user = db.query(User).filter(User.username == form_data.username).first()
     if db_user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
-    # Verify password
-    if not verify_password(user_login.password, db_user.password):
+    if not verify_password(form_data.password, db_user.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
-    # Create JWT token
-    access_token = create_access_token(data={"sub": db_user.username})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return tokens(data={"sub": db_user.username})
 
 
-@router.get("/user/me", response_model=UserResponse)
+@router.get("/user/me", response_model=UserSchema)
 async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
