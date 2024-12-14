@@ -26,7 +26,7 @@ def read_spheres(db: Session = Depends(get_db)):
     return spheres
 
 
-@router.get("/spheres/{sphere_id}", response_model=SphereSchema)
+@router.get("/spheres/{sphere_id}/", response_model=SphereSchema)
 def read_category(sphere_id: int, db: Session = Depends(get_db)):
     sphere = db.query(Sphere).filter(Sphere.id == sphere_id).first()
     if sphere is None:

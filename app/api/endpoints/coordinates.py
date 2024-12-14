@@ -32,7 +32,7 @@ async def get_districts() -> List[Dict[str, Any]]:
     return json.loads(json.dumps(data, cls=MongoEncoder))
 
 
-@router.get("/district/{parent_code}")
+@router.get("/district/{parent_code}/")
 async def get_district(parent_code: int) -> List[Dict[str, Any]]:
     district = District(document={})
     data = await district.get(parent_code)

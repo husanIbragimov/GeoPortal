@@ -3,6 +3,9 @@
 ## __How to run the FastAPI project__
 
 1. Clone the repository
+   ```bash
+   https://github.com/husanIbragimov/GeoPortal.git && cd GeoPortal
+   ```
 2. Create a virtual environment
    ```bash
     virtualenv venv
@@ -19,48 +22,18 @@
    ```bash
     cp .env.example .env
     ```
-6. **nitialize Alembic** for database migrations
-    ```bash
-    alembic init alembic
-    ```
-7. **Configure Alembic:** Edit __alembic.ini__ to set the SQLAlchemy URL. For example:
-    ```bash
-    sqlalchemy.url = postgresql://user:password@localhost/dbname
-    ```
-    Here's how you can update your __env.py__ file to combine the metadata from multiple __Base__ classes correctly:
 
-    ```python
-    from sqlalchemy import MetaData # add this import
+6. **Run the migration** to apply the changes to the database
+   ```bash
+   alembic upgrade head
+   ```
 
-    # add your model's MetaData object here
-    # for 'autogenerate' support
-    # from myapp import mymodel
-    # target_metadata = mymodel.Base.metadata
-    from app.models import user, sphere
-    
-    # Combine metadata from multiple Base classes
-    target_metadata = MetaData()
-    for metadata in [user.Base.metadata, sphere.Base.metadata]:
-        for table in metadata.tables.values():
-            table.tometadata(target_metadata)
-    
-    ```
-
-8. **Create a migration repository**
-    ```bash
-    alembic revision --autogenerate -m "Initial migration"
-    ```
-9. **Run the migration** to apply the changes to the database
-    ```bash
-    alembic upgrade head
-    ```
-
-10. **Create Sphere data**
+7. **Create Sphere data**
     ```bash
     python load_spheres_to_db.py
     ```
 
-11. Run the FastAPI project
+8. Run the FastAPI project
     ```bash
-     uvicorn app.main:app --reload
+     fastapi run
      ```
