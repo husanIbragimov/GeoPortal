@@ -58,3 +58,9 @@ def read_all_spheres(db: Session = Depends(get_db)):
 def get_number_of_births(db: Session = Depends(get_db)):
     response = requests.get(settings.STAT_URI).json()
     return response
+
+
+@router.get("/report_field/{pk}/meta-data")
+def get_report_field_meta_data(pk: int):
+    response = requests.get(f"{settings.SIAT_URI}/media/uploads/sdmx/sdmx_data_{pk}.json").json()
+    return response

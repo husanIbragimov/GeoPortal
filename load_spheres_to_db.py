@@ -11,14 +11,14 @@ class LoadSpheresToDB:
         self.cur = self.conn.cursor()
         self.url = "https://api.siat.stat.uz/sdmx/json/"
 
-    def insert_sphere(self, title, icon, parent_id):
+    def insert_sphere(self, title, icon, parent_id, section_id):
         self.cur.execute(
             """
-            INSERT INTO spheres (title, icon, parent_id, is_active)
-            VALUES (%s, %s, %s, true)
+            INSERT INTO spheres (title, icon, parent_id, is_active, section_id)
+            VALUES (%s, %s, %s, true, %s)
             RETURNING id
             """,
-            (title, icon, parent_id)
+            (title, icon, parent_id, section_id)
         )
         self.conn.commit()
         return self.cur.fetchone()[0]
@@ -46,9 +46,9 @@ class LoadSpheresToDB:
 
         for index, row in data_df.iloc[:-2].iterrows():
             for child in row["children"]:
-                sphere_id = self.insert_sphere(child['name'], child['icon_svg'], None)
+                sphere_id = self.insert_sphere(child['name'], child['icon_svg'], None, child['id'])
                 for sub_child in child["children"][0]["children"]:
-                    self.insert_sphere(sub_child['name'], sub_child['icon_svg'], sphere_id)
+                    self.insert_sphere(sub_child['name'], sub_child['icon_svg'], sphere_id, sub_child['id'])
         return "Success"
 
     def get_load_svg_to_db(self):

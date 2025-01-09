@@ -13,6 +13,7 @@ class Sphere(Base):
     parent_id = Column(Integer, ForeignKey('spheres.id'), nullable=True)
     icon = Column(String, nullable=True)
     is_active = Column(Boolean, default=True)
+    section_id = Column(Integer, nullable=True, index=True)
 
     # Define a self-referential relationship
     parent = relationship('Sphere', remote_side=[id], backref='children')
