@@ -1,0 +1,7 @@
+{% block content %}
+    
+    {% for country in countries %}
+        <p><a href="{{ country.sov_a3 }}">{{ country.name }}</a></p>
+    {% endfor %}
+    
+{% endblock %}

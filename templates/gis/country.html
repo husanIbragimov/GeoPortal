@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load geojson_tags leaflet_tags %}
+
+{% block static_files %}
+    {% leaflet_js %}
+    {% leaflet_css %}
+{% endblock %}
+
+{% block content %}
+
+    <h1>{{ country.name }}</h1>
+    <div>
+        {% leaflet_map "map" callback="map_init" %}
+    </div>
+
+    <script type="text/javascript">
+        function map_init(map, options) {
+            var area = L.geoJson({{ country.geom|geojsonfeature|safe }}).addTo(map);
+            map.fitBounds(area.getBounds());
+        }
+    </script>
+
+{% endblock %}

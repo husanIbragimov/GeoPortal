@@ -8,7 +8,29 @@ from django.views.generic import TemplateView
 from folium.plugins import MousePosition
 from shapely.geometry import shape
 from django.views.decorators.cache import cache_page
+
+from apps.world.models import Country
 from core.settings import GEOJSON_URL
+
+
+class CountryIndexView(TemplateView):
+    template_name = 'gis/countries.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["countries"] = Country.objects.all()
+        return context
+
+
+class CountryDetailView(TemplateView):
+    template_name = 'gis/country.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["country"] = Country.objects.get(sov_a3=self.kwargs.get('iso_code'))
+        return context
+
+
 
 
 @cache_page(60 * 15)

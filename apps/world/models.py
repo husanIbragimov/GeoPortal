@@ -170,9 +170,12 @@ class Country(models.Model):
     fclass_se = models.CharField(max_length=15, null=True)
     fclass_bd = models.CharField(max_length=24, null=True)
     fclass_ua = models.CharField(max_length=12, null=True)
-    geom = models.MultiPolygonField(srid=-1)
+    geom = models.MultiPolygonField(srid=4326)
 
     def __str__(self): return self.name
+
+    class Meta:
+        ordering = ['name']
 
 
 # Auto-generated `LayerMapping` dictionary for Country model
