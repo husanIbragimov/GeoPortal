@@ -16,6 +16,7 @@ class SphereSchema(BaseModel):
     id: int
     title: str
     icon: Optional[str] = None
+    icon_light: Optional[str] = None
     is_active: bool
     children: Optional[List[SubSphereSchema]] = []
 
@@ -26,6 +27,7 @@ class SphereSchema(BaseModel):
 class SphereCreateSchema(BaseModel):
     title: str
     icon: Optional[str] = None
+    icon_light: Optional[str] = None
     is_active: bool = True
     parent_id: Optional[int] = None
 

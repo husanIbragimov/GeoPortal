@@ -22,18 +22,22 @@
    ```bash
     cp .env.example .env
     ```
+6. **Create migration** to generate the initial migration
+   ```bash
+   alembic revision --autogenerate -m "Initial migration"
+   ```   
 
-6. **Run the migration** to apply the changes to the database
+7. **Run the migration** to apply the changes to the database
    ```bash
    alembic upgrade head
    ```
 
-7. **Create Sphere data**
+8. **Create Sphere data**
     ```bash
     python load_spheres_to_db.py
     ```
 
-8. Run the FastAPI project
+9. Run the FastAPI project
     ```bash
      fastapi run
      ```

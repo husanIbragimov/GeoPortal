@@ -1,8 +1,21 @@
+from enum import Enum
+
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
-from sqlalchemy.orm import relationship, aliased
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import relationship
 
 from app.db.session import Base
+
+
+class ColorEnum(Enum):
+    ORANGE = 0, 'orange'
+    YELLOW = 1, 'yellow'
+    GREEN = 2, 'green'
+    CYAN = 3, 'cyan'
+    BLUE = 4, 'blue'
+
+    @classmethod
+    def get_color(cls, value):
+        return next(color.value[1] for color in cls if color.value[0] == value)
 
 
 class Sphere(Base):
@@ -12,6 +25,7 @@ class Sphere(Base):
     title = Column(String(255), nullable=True)
     parent_id = Column(Integer, ForeignKey('spheres.id'), nullable=True)
     icon = Column(String, nullable=True)
+    icon_light = Column(String, nullable=True)
     is_active = Column(Boolean, default=True)
     section_id = Column(Integer, nullable=True, index=True)
 
