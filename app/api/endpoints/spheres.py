@@ -1,14 +1,14 @@
-import json
-import requests
-import polars as pl
-
-from . import get_db
 from typing import List
+import matplotlib.pyplot as plt
+import polars as pl
+import requests
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session, joinedload
+
 from app.core.config import settings
 from app.models.sphere import Sphere
-from sqlalchemy.orm import Session, joinedload
-from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.spheres import SphereCreateSchema, SphereSchema
+from . import get_db
 from ...models import ColorEnum
 
 router = APIRouter(
@@ -64,39 +64,46 @@ def get_number_of_births(db: Session = Depends(get_db)):
 
 @router.get("/report_field/{pk}/meta-data")
 def get_report_field_meta_data(pk: int):
-    colors = ["orange", "yellow", "green", "cyan", "blue"]
     response = requests.get(f"{settings.SIAT_URI}/media/uploads/sdmx/sdmx_data_{pk}.json").json()
     data_df = pl.DataFrame(response[0]["data"])
-    print(data_df)
+
     # Polars DataFrame yaratish
     df = pl.DataFrame(response[0]["data"])
 
-    year_cols = [col for col in data_df.columns if col.isdigit()]
+    years = [col for col in data_df.columns if col.isdigit()]
+    values = []
+    for year in years:
+        values.extend(df[year].to_list())
 
-    # Min va max qiymatlarni aniqlash
-    min_val = df.select(year_cols).min().to_series().min()
-    max_val = df.select(year_cols).max().to_series().max()
+    # Sort the values
+    sorted_values = sorted(values)
 
-    # Normalizatsiya va rang belgilash
-    df = df.with_columns([
-        ((df[year] - min_val) / (max_val - min_val) * (len(colors) - 1)).round().cast(int).alias(f"{year}_color")
-        for year in year_cols
-    ])
+    # Define a color map
+    color_map = ["orange", "cyan", "green", "yellow", "blue", "red", "purple", "pink"]
 
-    # Ranglar bilan almashtirish
-    for year in year_cols:
-        df = df.with_columns(
-            df[f"{year}_color"].map_elements(
-                lambda s: colors[s]
-            ).alias(f"{year}_color")
-        )
+    # Assign colors based on the sorted order
+    color_dict = {value: color_map[i % len(color_map)] for i, value in enumerate(sorted_values)}
 
-    # JSON formatiga qaytarish
-    result = []
-    for row in df.iter_rows(named=True):
-        item = {year: {"value": row[year], "color": row[f"{year}_color"]} for year in year_cols}
-        item.update({k: row[k] for k in row if k not in year_cols and "_color" not in k})
-        result.append(item)
+    # Prepare data for plotting
+    plot_data = []
+    plot_colors = []
+    for year in years:
+        for value in df[year].to_list():
+            plot_data.append((year, value))
+            plot_colors.append(color_dict[value])
 
-    # Yakuniy JSON chiqishi
-    return result
+    # Create the bar chart
+    fig, ax = plt.subplots()
+    for i, (year, value) in enumerate(plot_data):
+        ax.bar(f"{year}-{i}", value, color=plot_colors[i])
+
+    # Set labels and title
+    ax.set_xlabel('Year')
+    ax.set_ylabel('Value')
+    ax.set_title('Yearly Data Visualization')
+
+    # Show the plot
+    plt.xticks(rotation=90)
+    plt.show()
+
+    return response
