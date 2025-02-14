@@ -64,46 +64,42 @@ def get_number_of_births(db: Session = Depends(get_db)):
 
 @router.get("/report_field/{pk}/meta-data")
 def get_report_field_meta_data(pk: int):
-    response = requests.get(f"{settings.SIAT_URI}/media/uploads/sdmx/sdmx_data_{pk}.json").json()
-    data_df = pl.DataFrame(response[0]["data"])
+    response = requests.get(f"{settings.SIAT_URI}/media/uploads/sdmx/sdmx_data_{pk}.json")
+    print(response.status_code)
 
-    # Polars DataFrame yaratish
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail="Failed to fetch data")
+
+    try:
+        data = response.json()
+    except requests.exceptions.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="Invalid JSON response")
+
+    if not data:
+        raise HTTPException(status_code=404, detail="No data found")
     df = pl.DataFrame(response[0]["data"])
 
-    years = [col for col in data_df.columns if col.isdigit()]
-    values = []
-    for year in years:
-        values.extend(df[year].to_list())
+    COLOR_MAP = [ColorEnum.ORANGE, ColorEnum.YELLOW, ColorEnum.GREEN, ColorEnum.CYAN, ColorEnum.BLUE]
 
-    # Sort the values
-    sorted_values = sorted(values)
+    years = [col for col in df.columns if col.isdigit()]
+    values = df.select(years).to_numpy().flatten()
 
-    # Define a color map
-    color_map = ["orange", "cyan", "green", "yellow", "blue", "red", "purple", "pink"]
+    min_val = values.min()
+    max_val = values.max()
 
-    # Assign colors based on the sorted order
-    color_dict = {value: color_map[i % len(color_map)] for i, value in enumerate(sorted_values)}
+    def get_color(value):
+        norm = (value - min_val) / (max_val - min_val)  # Normalizatsiya
+        index = int(norm * (len(COLOR_MAP) - 1))  # Rang indeksini hisoblash
+        return COLOR_MAP[index].value
 
-    # Prepare data for plotting
-    plot_data = []
-    plot_colors = []
-    for year in years:
-        for value in df[year].to_list():
-            plot_data.append((year, value))
-            plot_colors.append(color_dict[value])
+    updated_data = []
+    for index, row in df.iter_rows():
+        new_row = row.copy()
+        for year in years:
+            new_row[year] = {"value": row[year], "color": get_color(row[year])}
+        updated_data.append(new_row)
 
-    # Create the bar chart
-    fig, ax = plt.subplots()
-    for i, (year, value) in enumerate(plot_data):
-        ax.bar(f"{year}-{i}", value, color=plot_colors[i])
+    print(updated_data)
 
-    # Set labels and title
-    ax.set_xlabel('Year')
-    ax.set_ylabel('Value')
-    ax.set_title('Yearly Data Visualization')
 
-    # Show the plot
-    plt.xticks(rotation=90)
-    plt.show()
 
-    return response

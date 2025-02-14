@@ -14,11 +14,11 @@ class LoadSpheresToDB:
     def insert_sphere(self, title, icon, parent_id, section_id):
         self.cur.execute(
             """
-            INSERT INTO spheres (title, icon, parent_id, is_active, section_id)
-            VALUES (%s, %s, %s, true, %s)
+            INSERT INTO spheres (title, icon, icon_light, parent_id, is_active, section_id)
+            VALUES (%s, %s, %s, %s, true, %s)
             RETURNING id
             """,
-            (title, icon, parent_id, section_id)
+            (title, icon, icon, parent_id, section_id)
         )
         self.conn.commit()
         return self.cur.fetchone()[0]
