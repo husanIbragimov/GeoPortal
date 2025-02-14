@@ -1,15 +1,13 @@
-from typing import List
-import matplotlib.pyplot as plt
+from typing import List, Annotated
 import polars as pl
 import requests
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, joinedload
 
 from app.core.config import settings
 from app.models.sphere import Sphere
 from app.schemas.spheres import SphereCreateSchema, SphereSchema
 from . import get_db
-from ...models import ColorEnum
 
 router = APIRouter(
     tags=["spheres"],
@@ -56,16 +54,9 @@ def read_all_spheres(db: Session = Depends(get_db)):
     return spheres
 
 
-@router.get("/number_of_births")
-def get_number_of_births(db: Session = Depends(get_db)):
-    response = requests.get(settings.STAT_URI).json()
-    return response
-
-
-@router.get("/report_field/{pk}/meta-data")
-def get_report_field_meta_data(pk: int):
+@router.get("/columns/{pk}/")
+def get_columns(pk: int):
     response = requests.get(f"{settings.SIAT_URI}/media/uploads/sdmx/sdmx_data_{pk}.json")
-    print(response.status_code)
 
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail="Failed to fetch data")
@@ -77,29 +68,51 @@ def get_report_field_meta_data(pk: int):
 
     if not data:
         raise HTTPException(status_code=404, detail="No data found")
-    df = pl.DataFrame(response[0]["data"])
 
-    COLOR_MAP = [ColorEnum.ORANGE, ColorEnum.YELLOW, ColorEnum.GREEN, ColorEnum.CYAN, ColorEnum.BLUE]
+    data_df = pl.DataFrame(data[0]["data"])
 
-    years = [col for col in df.columns if col.isdigit()]
-    values = df.select(years).to_numpy().flatten()
+    columns = data_df.columns[4:]
 
-    min_val = values.min()
-    max_val = values.max()
 
-    def get_color(value):
-        norm = (value - min_val) / (max_val - min_val)  # Normalizatsiya
-        index = int(norm * (len(COLOR_MAP) - 1))  # Rang indeksini hisoblash
-        return COLOR_MAP[index].value
 
-    updated_data = []
-    for index, row in df.iter_rows():
-        new_row = row.copy()
-        for year in years:
-            new_row[year] = {"value": row[year], "color": get_color(row[year])}
-        updated_data.append(new_row)
+    return
 
-    print(updated_data)
 
+@router.get("/report_field/{pk}/meta-data")
+def get_report_field_meta_data(pk: int, query: Annotated[str | None, Query(max_length=50)] = None):
+    response = requests.get(f"{settings.SIAT_URI}/media/uploads/sdmx/sdmx_data_{pk}.json")
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail="Failed to fetch data")
+
+    try:
+        data = response.json()
+    except requests.exceptions.JSONDecodeError:
+        raise HTTPException(status_code=500, detail="Invalid JSON response")
+
+    if not data:
+        raise HTTPException(status_code=404, detail="No data found")
+
+    data_df = pl.DataFrame(data[0]["data"])
+
+    COLOR_MAP = ["#FFA500", "#FFFF00", "#008000", "#00FFFF", "#0000FF"]
+
+    def get_color(value, min_value, max_value):
+        norm = (value - min_value) / (max_value - min_value)  # Normalization
+        index = int(norm * (len(COLOR_MAP) - 1))  # Calculate color index
+        print(COLOR_MAP[index])
+        return COLOR_MAP[index]
+
+    years = data_df.columns[4:]
+
+    for year in years:
+        max_value = data_df[year].max()
+        min_value = data_df[year].min()
+        data_df = data_df.with_columns(
+            pl.col(year).map_elements(lambda x: {'value': x, 'color': get_color(x, min_value, max_value)},
+                                      return_dtype=pl.Object).alias(year)
+        )
+
+    return data_df.to_dicts()
 
 

@@ -7,11 +7,11 @@ from app.db.session import Base
 
 
 class ColorEnum(Enum):
-    ORANGE = (0, 'orange')
-    YELLOW = (1, 'yellow')
-    GREEN = (2, 'green')
-    CYAN = (3, 'cyan')
-    BLUE = (4, 'blue')
+    ORANGE = 0, 'orange'
+    YELLOW = 1, 'yellow'
+    GREEN = 2, 'green'
+    CYAN = 3, 'cyan'
+    BLUE = 4, 'blue'
 
     @classmethod
     def get_color(cls, value):
