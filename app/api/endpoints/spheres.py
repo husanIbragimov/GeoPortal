@@ -191,6 +191,12 @@ def get_report_field_meta_data(
     data_df = pl.DataFrame(data[0]["data"])
     year_column = f"{year}"
 
+    years = data_df.columns
+    if year_column not in years:
+        year_column = years[-1]
+
+    data_df = data_df.filter(data_df["Code"] != "1700")
+
     try:
         year_values = data_df[year_column].to_list()
     except Exception as e:
@@ -202,7 +208,7 @@ def get_report_field_meta_data(
         {
             row.get("Code"): {
                 "value": row.get(year_column),
-                "year": year,
+                "year": year_column,
                 "color": color,
                 "Klassifikator": row.get("Klassifikator"),
                 "Klassifikator_ru": row.get("Klassifikator_ru"),
