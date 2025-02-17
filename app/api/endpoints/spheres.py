@@ -177,6 +177,7 @@ def get_report_field_meta_data(
         year: int = Query(default=datetime.now().year, le=datetime.now().year)
 ) -> List[Dict[str, Any]]:
     response = requests.get(f"{settings.SIAT_URI}/media/uploads/sdmx/sdmx_data_{pk}.json")
+    print(response.status_code)
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail="Failed to fetch data")
 
@@ -207,6 +208,7 @@ def get_report_field_meta_data(
     sub_data = (
         {
             row.get("Code"): {
+                "soato": row.get("Code"),
                 "value": row.get(year_column),
                 "year": year_column,
                 "color": color,
