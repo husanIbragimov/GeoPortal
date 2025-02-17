@@ -207,15 +207,13 @@ def get_report_field_meta_data(
 
     sub_data = (
         {
-            row.get("Code"): {
-                "soato": row.get("Code"),
-                "value": row.get(year_column),
-                "year": year_column,
-                "color": color,
-                "Klassifikator": row.get("Klassifikator"),
-                "Klassifikator_ru": row.get("Klassifikator_ru"),
-                "Klassifikator_en": row.get("Klassifikator_en")
-            }
+            "soato": row.get("Code"),
+            "value": row.get(year_column),
+            "year": year_column,
+            "color": color,
+            "Klassifikator": row.get("Klassifikator"),
+            "Klassifikator_ru": row.get("Klassifikator_ru"),
+            "Klassifikator_en": row.get("Klassifikator_en")
         } for row, color in zip(data_df.to_dicts(), colors)
     )
 
