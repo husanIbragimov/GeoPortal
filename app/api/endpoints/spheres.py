@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.core.config import settings
 from app.models.sphere import Sphere
-from app.schemas.spheres import SphereCreateSchema, SphereSchema
+from app.schemas.spheres import SphereSchema
 from . import get_db
 
 router = APIRouter(
@@ -173,10 +173,13 @@ def calculate_color_mapping(values: List[float], color_map: List[str]) -> List[s
 @router.get("/report_field/{pk}/meta-data")
 def get_report_field_meta_data(
         pk: int,
-        year: int = Query(default=datetime.now().year, le=datetime.now().year)
+        year: int = Query(default=0, description="Year to fetch data")
 ) -> List[Dict[str, Any]]:
+
+    if year == 0:
+        raise HTTPException(status_code=404, detail="Year is required")
+
     response = requests.get(f"{settings.SIAT_URI}/media/uploads/sdmx/sdmx_data_{pk}.json")
-    print(response.status_code)
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail="Failed to fetch data")
 
@@ -196,14 +199,16 @@ def get_report_field_meta_data(
         year_column = years[-1]
 
     data_df = data_df.filter(data_df["Code"] != "1700")
+    # data_df = data_df.filter(data_df["Code"].len() == 4)
 
     try:
-        year_values = data_df[year_column].to_list()
+        provinces = data_df[year_column].to_list()
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"{e}")
 
-    colors = calculate_color_mapping(year_values, COLOR_MAP)
-    print(colors)
+    print(provinces)
+
+    colors = calculate_color_mapping(provinces, COLOR_MAP)
 
     sub_data = (
         {
@@ -220,4 +225,40 @@ def get_report_field_meta_data(
     return [{
         "metadata": data[0]["metadata"],
         "data": sub_data
+    }]
+
+
+# --- API endpoint ---
+@router.get("/report_data/{year}/{pk}/{soato}/district")
+def get_report_data_by_district(
+        year: int,
+        pk: int,
+        soato: str
+) -> List[Dict[str, Any]]:
+    response = requests.get(f"{settings.SIAT_URI}/media/uploads/sdmx/sdmx_data_{pk}.json")
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail="Failed to fetch data")
+
+    try:
+        data = response.json()
+    except ValueError:
+        raise HTTPException(status_code=500, detail="Invalid JSON response")
+
+    if not data:
+        raise HTTPException(status_code=404, detail="No data found")
+
+    data_df = pl.DataFrame(data[0]["data"])
+    year_column = f"{year}"
+
+    soato = soato[:4]
+
+    data_df = data_df.filter(
+        (pl.col("Code").str.starts_with(soato)) & (pl.col("Code").str.len_chars() != 4)
+    ).to_dicts()
+    print("Data DF")
+    print(data_df)
+
+
+    return [{
+        "message": "Data not found"
     }]
