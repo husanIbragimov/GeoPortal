@@ -19,6 +19,7 @@ class ColorEnum(Enum):
 
 
 class Sphere(Base):
+    children = None
     __tablename__ = "spheres"
 
     id = Column(Integer, primary_key=True, index=True)

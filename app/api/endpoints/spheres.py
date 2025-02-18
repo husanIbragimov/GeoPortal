@@ -36,18 +36,18 @@ def read_category(sphere_id: int, db: Session = Depends(get_db)):
     return sphere
 
 
-@router.post("/sphere/", response_model=SphereCreateSchema)
-def create_sphere(sphere: SphereCreateSchema, db: Session = Depends(get_db)):
-    db_sphere = Sphere(
-        title=sphere.title,
-        icon=sphere.icon,
-        is_active=sphere.is_active,
-        parent_id=sphere.parent_id
-    )
-    db.add(db_sphere)
-    db.commit()
-    db.refresh(db_sphere)
-    return db_sphere
+# @router.post("/sphere/", response_model=SphereCreateSchema)
+# def create_sphere(sphere: SphereCreateSchema, db: Session = Depends(get_db)):
+#     db_sphere = Sphere(
+#         title=sphere.title,
+#         icon=sphere.icon,
+#         is_active=sphere.is_active,
+#         parent_id=sphere.parent_id
+#     )
+#     db.add(db_sphere)
+#     db.commit()
+#     db.refresh(db_sphere)
+#     return db_sphere
 
 
 @router.get("/all_spheres", response_model=List[SphereSchema])
@@ -85,7 +85,7 @@ def get_columns(pk: int):
 
 
 # Ranglar gradienti uchun doimiy o'zgaruvchi
-COLOR_MAP = ["#FFA500", "#FFFF00", "#008000", "#00FFFF", "#0000FF"]
+COLOR_MAP = ['#f75c02', '#faf202', '#05ff33', '#05fff3', '#05c9ff']
 
 
 # --- Ranglarni konvertatsiya va interpolatsiya qilish funksiyalari ---
@@ -163,10 +163,9 @@ def calculate_color_mapping(values: List[float], color_map: List[str]) -> List[s
     if max_value == min_value:
         return [color_map[-1]] * len(values)
 
-    mapped_colors = []
-    for value in values:
-        normalized = (value - min_value) / (max_value - min_value)
-        mapped_colors.append(get_gradient_color(normalized, color_map))
+    mapped_colors = [
+        get_gradient_color((value - min_value) / (max_value - min_value), color_map) for value in values
+    ]
     return mapped_colors
 
 
@@ -204,6 +203,7 @@ def get_report_field_meta_data(
         raise HTTPException(status_code=404, detail=f"{e}")
 
     colors = calculate_color_mapping(year_values, COLOR_MAP)
+    print(colors)
 
     sub_data = (
         {

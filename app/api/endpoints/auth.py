@@ -17,12 +17,17 @@ router = APIRouter(
 
 @router.post("/register/", response_model=UserRegister, status_code=status.HTTP_201_CREATED)
 async def register(user_create: UserRegister, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(
-        (User.username == user_create.username) |
+    db_username = db.query(User).filter(
+        (User.username == user_create.username)
+    ).first()
+    if db_username:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
+
+    db_email = db.query(User).filter(
         (User.email == user_create.email)
     ).first()
-    if db_user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username or email already registered")
+    if db_email:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
 
     hashed_password = hash_password(user_create.password)
     new_user = User(
