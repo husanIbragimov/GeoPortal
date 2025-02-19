@@ -34,4 +34,4 @@ SELECT
     FROM spheres
     WHERE 
 """
-data = db.get_data(query)
+# data = db.get_data(query)

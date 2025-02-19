@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, joinedload
 
 from app.core.config import settings
+from app.core.utils import calculate_color_mapping, COLOR_MAP
 from app.models.sphere import Sphere
 from app.schemas.spheres import SphereSchema
 from . import get_db
@@ -36,20 +37,6 @@ def read_category(sphere_id: int, db: Session = Depends(get_db)):
     return sphere
 
 
-# @router.post("/sphere/", response_model=SphereCreateSchema)
-# def create_sphere(sphere: SphereCreateSchema, db: Session = Depends(get_db)):
-#     db_sphere = Sphere(
-#         title=sphere.title,
-#         icon=sphere.icon,
-#         is_active=sphere.is_active,
-#         parent_id=sphere.parent_id
-#     )
-#     db.add(db_sphere)
-#     db.commit()
-#     db.refresh(db_sphere)
-#     return db_sphere
-
-
 @router.get("/all_spheres", response_model=List[SphereSchema])
 def read_all_spheres(db: Session = Depends(get_db)):
     spheres = db.query(Sphere).filter(Sphere.parent_id == None).order_by(Sphere.id).all()
@@ -57,7 +44,7 @@ def read_all_spheres(db: Session = Depends(get_db)):
 
 
 @router.get("/columns/{pk}/")
-def get_columns(pk: int):
+def get_years(pk: int):
     response = requests.get(f"{settings.SIAT_URI}/media/uploads/sdmx/sdmx_data_{pk}.json")
 
     if response.status_code != 200:
@@ -84,94 +71,9 @@ def get_columns(pk: int):
     return years
 
 
-# Ranglar gradienti uchun doimiy o'zgaruvchi
-COLOR_MAP = ['#f75c02', '#faf202', '#05ff33', '#05fff3', '#05c9ff']
-
-
-# --- Ranglarni konvertatsiya va interpolatsiya qilish funksiyalari ---
-
-def hex_to_rgb(hex_color: str) -> tuple:
-    """Hex rangni (masalan, "#FFA500") RGB tuple ga o‘zgartiradi."""
-    hex_color = hex_color.lstrip('#')
-    return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
-
-
-def rgb_to_hex(rgb: tuple) -> str:
-    """RGB tuple ni hex rangga (masalan, "#FFA500") o‘zgartiradi."""
-    return '#{:02X}{:02X}{:02X}'.format(*rgb)
-
-
-def interpolate_color(color1: str, color2: str, t: float) -> str:
-    """
-    Ikkita hex rang orasida chiziqli interpolatsiya qiladi.
-
-    :param color1: Boshlang'ich rang (hex)
-    :param color2: Tugash rang (hex)
-    :param t: Interpolatsiya progressi (0 dan 1 gacha)
-    :return: Interpolatsiyalangan rang (hex)
-    """
-    r1, g1, b1 = hex_to_rgb(color1)
-    r2, g2, b2 = hex_to_rgb(color2)
-    r = int(r1 + (r2 - r1) * t)
-    g = int(g1 + (g2 - g1) * t)
-    b = int(b1 + (b2 - b1) * t)
-    return rgb_to_hex((r, g, b))
-
-
-def get_gradient_color(normalized_value: float, color_map: List[str]) -> str:
-    """
-    Normalizatsiyalangan qiymat asosida rang gradientini aniqlaydi.
-
-    :param normalized_value: 0 va 1 oraligʻidagi qiymat
-    :param color_map: Ranglar roʻyxati (hex formatda)
-    :return: Mos keluvchi rang (hex)
-    """
-    n = len(color_map)
-    if normalized_value <= 0:
-        return color_map[0]
-    if normalized_value >= 1:
-        return color_map[-1]
-
-    segment_length = 1 / (n - 1)
-    segment_index = int(normalized_value / segment_length)
-
-    # Agar normalized_value oxirgi segmentga to'g'ri kelsa
-    if segment_index >= n - 1:
-        return color_map[-1]
-
-    segment_start = segment_index * segment_length
-    t = (normalized_value - segment_start) / segment_length
-    return interpolate_color(color_map[segment_index], color_map[segment_index + 1], t)
-
-
-def calculate_color_mapping(values: List[float], color_map: List[str]) -> List[str]:
-    """
-    Berilgan qiymatlar uchun minimal va maksimal qiymatlar asosida normalizatsiya
-    va gradient ranglarni hisoblaydi.
-
-    :param values: Qiymatlar roʻyxati
-    :param color_map: Ranglar roʻyxati (hex formatda)
-    :return: Har bir qiymatga mos ranglar roʻyxati (hex formatda)
-    """
-    if not values:
-        return []
-
-    min_value = min(values)
-    max_value = max(values)
-
-    # Agar barcha qiymatlar teng bo'lsa, oxirgi rangni qaytaramiz
-    if max_value == min_value:
-        return [color_map[-1]] * len(values)
-
-    mapped_colors = [
-        get_gradient_color((value - min_value) / (max_value - min_value), color_map) for value in values
-    ]
-    return mapped_colors
-
-
 # --- API endpoint ---
 @router.get("/report_field/{pk}/meta-data")
-def get_report_field_meta_data(
+def get_report_data_by_provinces(
         pk: int,
         year: int = Query(default=0, description="Year to fetch data")
 ) -> List[Dict[str, Any]]:
@@ -198,15 +100,11 @@ def get_report_field_meta_data(
     if year_column not in years:
         year_column = years[-1]
 
-    data_df = data_df.filter(data_df["Code"] != "1700")
-    # data_df = data_df.filter(data_df["Code"].len() == 4)
+    data_df = data_df.filter(data_df["Code"] != "1700" & data_df["Code"].str.len_chars() == 4)
 
-    try:
-        provinces = data_df[year_column].to_list()
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"{e}")
-
-    print(provinces)
+    provinces = data_df[year_column].to_list()
+    if not provinces:
+        raise HTTPException(status_code=404, detail="No data found")
 
     colors = calculate_color_mapping(provinces, COLOR_MAP)
 
@@ -250,15 +148,32 @@ def get_report_data_by_district(
     data_df = pl.DataFrame(data[0]["data"])
     year_column = f"{year}"
 
-    soato = soato[:4]
+    parent_soato = soato[:4]
 
     data_df = data_df.filter(
-        (pl.col("Code").str.starts_with(soato)) & (pl.col("Code").str.len_chars() != 4)
-    ).to_dicts()
-    print("Data DF")
-    print(data_df)
+        (pl.col("Code").str.starts_with(parent_soato)) & (pl.col("Code").str.len_chars() != 4)
+    )
+
+    district = data_df[year_column].to_list()
+    if not district:
+        raise HTTPException(status_code=404, detail="No data found")
+
+    colors = calculate_color_mapping(district, COLOR_MAP)
+
+    sub_data = (
+        {
+            "soato": row.get("Code"),
+            "value": row.get(year_column),
+            "year": year_column,
+            "color": color,
+            "Klassifikator": row.get("Klassifikator"),
+            "Klassifikator_ru": row.get("Klassifikator_ru"),
+            "Klassifikator_en": row.get("Klassifikator_en")
+        } for row, color in zip(data_df.to_dicts(), colors)
+    )
 
 
     return [{
-        "message": "Data not found"
+        "metadata": data[0]["metadata"],
+        "data": sub_data
     }]
