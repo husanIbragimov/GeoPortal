@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     SQLALCHEMY_DATABASE_URI: str = os.getenv("SQLALCHEMY_DATABASE_URI")
     STAT_URI: str = os.getenv("STAT_URI")
     SIAT_URI: str = os.getenv("SIAT_URI")
+    SDMX_URI: str = os.getenv("SDMX_URI")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     ALGORITHM: str = "HS256"
     
