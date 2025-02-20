@@ -100,7 +100,7 @@ def get_report_data_by_provinces(
     if year_column not in years:
         year_column = years[-1]
 
-    data_df = data_df.filter(data_df["Code"] != "1700" & data_df["Code"].str.len_chars() == 4)
+    data_df = data_df.filter((pl.col('Code') != "1700") & (pl.col("Code").str.len_chars() == 4))
 
     provinces = data_df[year_column].to_list()
     if not provinces:
