@@ -75,7 +75,7 @@ def get_years(pk: int):
 @router.get("/report_field/{pk}/meta-data")
 def get_report_data_by_provinces(
         pk: int,
-        year: int = Query(default=0, description="Year to fetch data")
+        year: str = Query(..., title="Year", description="Year to fetch data", min_length=4)
 ) -> List[Dict[str, Any]]:
 
     if year == 0:
@@ -129,7 +129,7 @@ def get_report_data_by_provinces(
 # --- API endpoint ---
 @router.get("/report_data/{year}/{pk}/{soato}/district")
 def get_report_data_by_district(
-        year: int,
+        year: str,
         pk: int,
         soato: str
 ) -> List[Dict[str, Any]]:
