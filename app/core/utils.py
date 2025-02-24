@@ -12,7 +12,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 # Ranglar gradienti uchun doimiy o'zgaruvchi
-COLOR_MAP = ['#f75c02', '#faf202', '#05ff33', '#05fff3', '#05c9ff']
+COLOR_MAP = ['#f75c02', '#faf202', '#05ff33']  # '#05fff3', '#05c9ff'
 
 
 # --- Ranglarni konvertatsiya va interpolatsiya qilish funksiyalari ---

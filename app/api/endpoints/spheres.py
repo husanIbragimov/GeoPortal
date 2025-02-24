@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List, Any, Dict
 
 import polars as pl
@@ -77,7 +76,6 @@ def get_report_data_by_provinces(
         pk: int,
         year: str = Query(..., title="Year", description="Year to fetch data", min_length=4)
 ) -> List[Dict[str, Any]]:
-
     if year == 0:
         raise HTTPException(status_code=404, detail="Year is required")
 
@@ -100,7 +98,13 @@ def get_report_data_by_provinces(
     if year_column not in years:
         year_column = years[-1]
 
-    data_df = data_df.filter((pl.col('Code') != "1700") & (pl.col("Code").str.len_chars() == 4))
+    is_regions = True
+    is_districts = data_df.filter(pl.col("Code").str.len_chars() > 4).shape[0] > 1
+    if data_df.filter(pl.col("Code").str.len_chars() == 4).shape[0] == 1:
+        is_regions = False
+        data_df = data_df.filter((pl.col('Code') == "1700"))
+    else:
+        data_df = data_df.filter((pl.col('Code') != "1700") & (pl.col("Code").str.len_chars() == 4))
 
     provinces = data_df[year_column].to_list()
     if not provinces:
@@ -122,7 +126,9 @@ def get_report_data_by_provinces(
 
     return [{
         "metadata": data[0]["metadata"],
-        "data": sub_data
+        "data": sub_data,
+        "is_regions": is_regions,
+        "is_districts": is_districts
     }]
 
 
@@ -171,7 +177,6 @@ def get_report_data_by_district(
             "Klassifikator_en": row.get("Klassifikator_en")
         } for row, color in zip(data_df.to_dicts(), colors)
     )
-
 
     return [{
         "metadata": data[0]["metadata"],
