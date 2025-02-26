@@ -1,36 +1,33 @@
+import uvicorn
 from fastapi import FastAPI
-from app.api.endpoints import (
-    auth,
-    spheres,
-    coordinates,
-)
 from fastapi.middleware.cors import CORSMiddleware
+
+from app.api.endpoints import router as api_endpoint_router
 from app.core.config import settings
 
-app = FastAPI(
-    title="Geographic Information System (G.I.S) API",
-    version="0.1.1",
-    docs_url="/docs",
-    debug=True,
-    description="This is a Geographic Information System (G.I.S) API. It provides information about regions and districts in Uzbekistan. The API is built using FastAPI and MongoDB. API is powered by Statistics Agency of the Republic of Uzbekistan.",
-)
 
-ORIGINS = (
-    "http://localhost",
-    "http://localhost:8080",
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "*"
-)
+def initialize_backend_application() -> FastAPI:
+    app = FastAPI(**settings.set_backend_app_attributes)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.ALLOWED_ORIGINS,
+        allow_credentials=settings.IS_ALLOWED_CREDENTIALS,
+        allow_methods=settings.ALLOWED_METHODS,
+        allow_headers=settings.ALLOWED_HEADERS,
+    )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+    app.include_router(router=api_endpoint_router, prefix=settings.API_PREFIX)
+    return app
 
-app.include_router(spheres.router, prefix="/v1/api", tags=["spheres"])
-app.include_router(coordinates.router, prefix="/v1/api", tags=["coordinates"])
-app.include_router(auth.router, prefix="/v1/api", tags=["auth"])
+
+backend_app: FastAPI = initialize_backend_application()
+
+if __name__ == "__main__":
+    uvicorn.run(
+        app="main:backend_app",
+        host=settings.SERVER_HOST,
+        port=settings.SERVER_PORT,
+        reload=settings.DEBUG,
+        workers=settings.SERVER_WORKERS,
+        log_level=settings.LOGGING_LEVEL
+    )
