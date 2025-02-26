@@ -5,6 +5,7 @@
 
 ## Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [Description](#description)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -65,7 +66,20 @@ git checkout django
 pip install -r requirements.txt
 ```
 
-6. Run the application using the following command:
+6. Copy the `.env.example` file to a new file called `.env`:
+
+```bash
+cp .env.example .env
+```
+
+7. Migrate the database using the following command:
+
+```bash
+python manage.py migrate
+```
+
+
+8. Run the application using the following command:
 
 ```bash
 python run.py
@@ -89,6 +103,10 @@ http://127.0.0.1:8000/
 
 2. Use the map controls to zoom in and out, pan, and interact with the map.
 3. Click on the map to view information about the location you clicked on.
+4. Load the data from the shapefile using the following command:
+    ```bash
+        python .\manage.py orginspect .\apps\world\maps\ne_10m_admin_0_sovereignty.shp Country --mapping --multi --name --null true
+    ```
 
 ## Contributing
 
