@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     SERVER_WORKERS: int = os.getenv("SERVER_WORKERS")
     LOGGING_LEVEL: str = os.getenv("LOGGING_LEVEL")
 
-    API_PREFIX: str = "/api"
+    API_PREFIX: str = "/v1"
     DOCS_URL: str = "/docs"
     OPENAPI_URL: str = "/openapi.json"
     REDOC_URL: str = "/redoc"
