@@ -16,11 +16,13 @@ class Settings(BaseSettings):
         "http://localhost:3000",  # React default port
         "http://0.0.0.0:3000",
         "http://127.0.0.1:3000",  # React docker port
-        "http://127.0.0.1:3001",
+        "http://localhost:3001",
         "http://localhost:5173",  # Qwik default port
         "http://0.0.0.0:5173",
         "http://127.0.0.1:5173",  # Qwik docker port
         "http://127.0.0.1:5174",
+        "http://172.16.3.149:3000",
+        "http://172.16.3.149:3001",
     ]
     ALLOWED_METHODS: list[str] = ["*"]
     ALLOWED_HEADERS: list[str] = ["*"]

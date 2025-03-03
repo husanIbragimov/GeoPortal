@@ -1,9 +1,11 @@
 import json
 from typing import List, Dict, Any
 
+import polars as pl
 from bson import ObjectId
-from app.schemas.documents import Region, District
 from fastapi import APIRouter, HTTPException
+
+from app.schemas.documents import Region, District
 
 router = APIRouter(
     tags=["coordinates"],
@@ -39,3 +41,25 @@ async def get_district(parent_code: int) -> List[Dict[str, Any]]:
     if not data:
         raise HTTPException(status_code=404, detail="District not found")
     return json.loads(json.dumps(data, cls=MongoEncoder))
+
+
+@router.get("/uzbekistan")
+async def get_uzbekistan() -> Dict[str, Any]:
+    data_df = pl.read_csv("data/uz_coordinates.csv")
+
+    return {
+        "type": "Feature",
+        "properties": {
+            "region_name_en": "Uzbekistan",
+            "region_name_ru": "Узбекистан",
+            "region_name": "O'zbekiston",
+            "parent_code": 1700,
+        },
+        "geometry": {
+            "type": "GeometryCollection",
+            "geometries": {
+                "type": "MultiPolygon",
+                "coordinates": tuple(zip(data_df["long"], data_df["lat"])),
+            }
+        },
+    }

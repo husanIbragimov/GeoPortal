@@ -107,8 +107,12 @@ class LoadSpheresToDB:
         deletion_ids = []
 
         for i in ids:
-            res = requests.get(f"https://{self.siat_url}/media/uploads/sdmx/sdmx_data_{i}.json")
+            res = requests.get(f"{self.siat_url}/media/uploads/sdmx/sdmx_data_{i}.json")
+
+            # print(res.json()[0]['data'], "\n\n\n\n")
             if res.status_code == 404:
+                deletion_ids.append(i)
+            if len(res.json()[0]['data']) == 1:
                 deletion_ids.append(i)
             if res.status_code == 200 and len(res.json()[0]['data'][0]['Code']) < 4:
                 deletion_ids.append(i)

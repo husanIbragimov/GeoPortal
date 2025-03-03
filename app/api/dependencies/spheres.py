@@ -91,6 +91,8 @@ def get_report_data_by_provinces(
     if not data:
         raise HTTPException(status_code=404, detail="No data found")
 
+    metadata = data[0]["metadata"]
+
     data_df = pl.DataFrame(data[0]["data"])
     year_column = f"{year}"
 
@@ -112,10 +114,29 @@ def get_report_data_by_provinces(
 
     colors = calculate_color_mapping(provinces, COLOR_MAP)
 
+    measurement = ""
+    measurement_ru = ""
+    measurement_en = ""
+
+    if len(metadata) > 5:
+        if metadata[5]["name_en"] == "Unit of measurement":
+            measurement = metadata[5]["value_uz"]
+            measurement_ru = metadata[5]["value_ru"]
+            measurement_en = metadata[5]["value_en"]
+        else:
+            for item in metadata:
+                if item["name_en"] == "Unit of measurement":
+                    measurement = item["value_uz"]
+                    measurement_ru = item["value_ru"]
+                    measurement_en = item["value_en"]
+                    break
+
     sub_data = (
         {
             "soato": row.get("Code"),
-            "value": row.get(year_column),
+            "value_uz": f"{row.get(year_column)} {measurement}",
+            "value_ru": f"{row.get(year_column)} {measurement_ru}",
+            "value_en": f"{row.get(year_column)} {measurement_en}",
             "year": year_column,
             "color": color,
             "Klassifikator": row.get("Klassifikator"),
@@ -151,6 +172,8 @@ def get_report_data_by_district(
     if not data:
         raise HTTPException(status_code=404, detail="No data found")
 
+    metadata = data[0]["metadata"]
+
     data_df = pl.DataFrame(data[0]["data"])
     year_column = f"{year}"
 
@@ -166,10 +189,29 @@ def get_report_data_by_district(
 
     colors = calculate_color_mapping(district, COLOR_MAP)
 
+    measurement = ""
+    measurement_ru = ""
+    measurement_en = ""
+
+    if len(metadata) > 5:
+        if metadata[5]["name_en"] == "Unit of measurement":
+            measurement = metadata[5]["value_uz"]
+            measurement_ru = metadata[5]["value_ru"]
+            measurement_en = metadata[5]["value_en"]
+        else:
+            for item in metadata:
+                if item["name_en"] == "Unit of measurement":
+                    measurement = item["value_uz"]
+                    measurement_ru = item["value_ru"]
+                    measurement_en = item["value_en"]
+                    break
+
     sub_data = (
         {
             "soato": row.get("Code"),
-            "value": row.get(year_column),
+            "value": f"{row.get(year_column)} {measurement}",
+            "value_ru": f"{row.get(year_column)} {measurement_ru}",
+            "value_en": f"{row.get(year_column)} {measurement_en}",
             "year": year_column,
             "color": color,
             "Klassifikator": row.get("Klassifikator"),
