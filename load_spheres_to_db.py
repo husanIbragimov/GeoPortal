@@ -133,6 +133,7 @@ class LoadSpheresToDB:
 
 class LoadGeoJsonToMD:
     def __init__(self):
+        # MongoDB connection setup
         self.conn = MongoClient('localhost', 27017)
         self.db = self.conn["gis"]
         self.districts_collection = self.db["districts"]
@@ -141,16 +142,30 @@ class LoadGeoJsonToMD:
     def insert_geojson(self):
         self.districts_collection.delete_many({})
         self.regions_collection.delete_many({})
+
         district_path = "data/gis.districts.json"
         file_df = pd.read_json(district_path)
+
         regions_path = "data/gis.regions.json"
         regions_df = pd.read_json(regions_path)
 
+        # Insert districts data, removing the '_id' field if it's invalid
         for index, row in file_df.iterrows():
-            self.districts_collection.insert_one(row.to_dict())
+            doc = row.to_dict()
+            # Remove the '_id' field if it exists
+            if '_id' in doc:
+                del doc['_id']
+            # Insert the cleaned document into MongoDB
+            self.districts_collection.insert_one(doc)
 
+        # Insert regions data, removing the '_id' field if it's invalid
         for index, row in regions_df.iterrows():
-            self.regions_collection.insert_one(row.to_dict())
+            doc = row.to_dict()
+            # Remove the '_id' field if it exists
+            if '_id' in doc:
+                del doc['_id']
+            # Insert the cleaned document into MongoDB
+            self.regions_collection.insert_one(doc)
 
 
 if __name__ == "__main__":
@@ -167,4 +182,3 @@ if __name__ == "__main__":
     load_geo = LoadGeoJsonToMD()
     load_geo.insert_geojson()
     print("Success")
-
