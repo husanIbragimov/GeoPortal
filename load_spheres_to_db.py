@@ -3,6 +3,7 @@ import re
 import pandas as pd
 import psycopg2
 import requests
+from pymongo import MongoClient
 from sqlalchemy import create_engine
 
 from app.core.config import settings
@@ -130,6 +131,28 @@ class LoadSpheresToDB:
         self.conn.commit()
 
 
+class LoadGeoJsonToMD:
+    def __init__(self):
+        self.conn = MongoClient('localhost', 27017)
+        self.db = self.conn["gis"]
+        self.districts_collection = self.db["districts"]
+        self.regions_collection = self.db["regions"]
+
+    def insert_geojson(self):
+        self.districts_collection.delete_many({})
+        self.regions_collection.delete_many({})
+        district_path = "data/gis.districts.json"
+        file_df = pd.read_json(district_path)
+        regions_path = "data/gis.regions.json"
+        regions_df = pd.read_json(regions_path)
+
+        for index, row in file_df.iterrows():
+            self.districts_collection.insert_one(row.to_dict())
+
+        for index, row in regions_df.iterrows():
+            self.regions_collection.insert_one(row.to_dict())
+
+
 if __name__ == "__main__":
     load_spheres = LoadSpheresToDB()
     load_spheres.reset_truncate_identities()
@@ -141,4 +164,7 @@ if __name__ == "__main__":
     load_spheres.update_icon_colors("#003985", "#ffffff")
     print("Update colors")
     load_spheres.close()
+    load_geo = LoadGeoJsonToMD()
+    load_geo.insert_geojson()
     print("Success")
+
