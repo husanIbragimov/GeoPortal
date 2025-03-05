@@ -12,7 +12,13 @@ class Settings(BaseSettings):
     TIMEZONE: str = "Asia/Tashkent"
     DESCRIPTION: str = "This is a Geographic Information System (G.I.S) API. It provides information about regions and districts in Uzbekistan. The API is built using FastAPI and MongoDB. API is powered by Statistics Agency of the Republic of Uzbekistan."
     DEBUG: bool = os.getenv("DEBUG")
-    ALLOWED_ORIGINS: list[str] = [os.getenv("ALLOWED_ORIGINS")]
+    ALLOWED_ORIGINS: list[str] = [
+        "http://172.16.10.83:8008",
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://172.16.3.149:3000",
+        "http://172.16.3.149:3001",
+    ]
     ALLOWED_METHODS: list[str] = ["*"]
     ALLOWED_HEADERS: list[str] = ["*"]
     IS_ALLOWED_CREDENTIALS: bool = os.getenv("IS_ALLOWED_CREDENTIALS")
