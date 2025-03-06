@@ -18,6 +18,8 @@ class Settings(BaseSettings):
         "http://localhost:3001",
         "http://172.16.3.149:3000",
         "http://172.16.3.149:3001",
+        "http://172.16.3.88:3000",
+        "http://172.16.3.88:3001",
     ]
     ALLOWED_METHODS: list[str] = ["*"]
     ALLOWED_HEADERS: list[str] = ["*"]
