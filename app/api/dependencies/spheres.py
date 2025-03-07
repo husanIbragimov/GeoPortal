@@ -149,7 +149,9 @@ def get_report_data_by_provinces(
         "metadata": data[0]["metadata"],
         "data": sub_data,
         "is_regions": is_regions,
-        "is_districts": is_districts
+        "is_districts": is_districts,
+        "min": data_df.min().to_dicts()[0][year_column],
+        "max": data_df.max().to_dicts()[0][year_column]
     }]
 
 
@@ -220,7 +222,11 @@ def get_report_data_by_district(
         } for row, color in zip(data_df.to_dicts(), colors)
     )
 
+    print(data_df.max(), data_df.min())
+
     return [{
         "metadata": data[0]["metadata"],
-        "data": sub_data
+        "data": sub_data,
+        "min": data_df.min().to_dicts()[0][year_column],
+        "max": data_df.max().to_dicts()[0][year_column]
     }]
