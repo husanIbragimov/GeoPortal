@@ -222,8 +222,6 @@ def get_report_data_by_district(
         } for row, color in zip(data_df.to_dicts(), colors)
     )
 
-    print(data_df.max(), data_df.min())
-
     return [{
         "metadata": data[0]["metadata"],
         "data": sub_data,
