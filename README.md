@@ -41,3 +41,14 @@
     ```bash
      fastapi run
      ```
+
+## Site Views
+
+### 1. GeoPortal default page 
+   ![GeoPortal default page](data%2Fimg%2FGeoPortal-default.jpg)
+
+### 2. GeoPortal spheres
+   ![GeoPortal-spheres.jpg](data%2Fimg%2FGeoPortal-spheres.jpg)
+
+### 3. Statistical data by region
+   ![GeoPortal.jpg](data%2Fimg%2FGeoPortal.jpg)
