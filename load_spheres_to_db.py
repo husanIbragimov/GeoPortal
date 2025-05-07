@@ -6,7 +6,7 @@ import requests
 from pymongo import MongoClient
 from sqlalchemy import create_engine
 
-from app.core.config import settings
+from src.core.config import settings
 
 
 class LoadSpheresToDB:

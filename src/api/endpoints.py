@@ -1,6 +1,6 @@
 import fastapi
 
-from app.api.dependencies import (
+from src.api.dependencies import (
     auth,
     spheres,
     coordinates,

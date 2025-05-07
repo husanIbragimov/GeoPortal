@@ -6,7 +6,7 @@ from bson import ObjectId
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.documents import Region, District, RegionDocument
+from src.documents import Region, District, RegionDocument
 
 
 class MongoEncoder(json.JSONEncoder):

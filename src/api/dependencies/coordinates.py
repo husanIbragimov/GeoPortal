@@ -5,7 +5,7 @@ import polars as pl
 from bson import ObjectId
 from fastapi import APIRouter, HTTPException
 
-from app.schemas.documents import Region, District
+from src.schemas.documents import Region, District
 
 router = APIRouter(
     tags=["coordinates"],
