@@ -34,6 +34,8 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Geo Portal Project"
     GEOJSON_URL: str = os.getenv("GEOJSON_URL", "")
     DATABASE_URL: str = os.getenv("DATABASE_URL", "")
+    MONGO_HOST: str = os.getenv("MONGO_HOST", "localhost")
+    MONGO_DB: str = os.getenv("MONGO_DB", "")
     POSTGRES_USER: str = os.getenv("POSTGRES_USER", "")
     POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "")
     POSTGRES_DB: str = os.getenv("POSTGRES_DB", "")

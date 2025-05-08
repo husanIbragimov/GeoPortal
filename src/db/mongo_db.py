@@ -1,12 +1,13 @@
 from typing import List, Dict, Any
 
+from core.config import settings
 from pymongo import MongoClient
 
 
 class MongoDB:
     def __init__(self, collection_name):
-        self.client = MongoClient('localhost', 27017)
-        self.db = self.client["gis"]  # app is the name of the database
+        self.client = MongoClient(settings.MONGO_HOST, 27017)
+        self.db = self.client[settings.MONGO_DB]  # app is the name of the database
         self.collection = self.db[collection_name]
 
     def insert(self, data):
