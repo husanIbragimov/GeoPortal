@@ -3,8 +3,8 @@ import enum
 from sqlalchemy import Column, String, Boolean, TIMESTAMP, Enum, Integer
 from sqlalchemy.sql.expression import text
 
-from src.core.utils import hash_password
-from src.db.session import Base
+from core.utils import hash_password
+from db.session import Base
 
 
 class GenderEnum(str, enum.Enum):

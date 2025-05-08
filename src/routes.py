@@ -1,9 +1,9 @@
 # from documents import Region, District
-# from src.schemas import RegionSchema, DistrictSchema
-# from main import src
+# from schemas import RegionSchema, DistrictSchema
+# from main import app
 #
 #
 #
-# @src.get("/children")
+# @app.get("/children")
 # async def get_districts() -> list[DistrictSchema]:
 #     ...

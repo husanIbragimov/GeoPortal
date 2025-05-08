@@ -1,12 +1,11 @@
 import json
-from pickle import FRAME
 from typing import List, Dict, Any
 
 from bson import ObjectId
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.documents import Region, District, RegionDocument
+from documents import Region, District
 
 
 class MongoEncoder(json.JSONEncoder):

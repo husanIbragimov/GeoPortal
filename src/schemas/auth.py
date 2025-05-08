@@ -1,7 +1,6 @@
-import random
 from typing import Optional
 
-from src.models import GenderEnum
+from models import GenderEnum
 from pydantic import BaseModel, EmailStr, validator
 
 

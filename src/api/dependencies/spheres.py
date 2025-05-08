@@ -5,10 +5,10 @@ import requests
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, joinedload
 
-from src.core.config import settings
-from src.core.utils import calculate_color_mapping, COLOR_MAP
-from src.models.sphere import Sphere
-from src.schemas.spheres import SphereSchema
+from core.config import settings
+from core.utils import calculate_color_mapping, COLOR_MAP
+from models.sphere import Sphere
+from schemas.spheres import SphereSchema
 from . import get_db
 
 router = APIRouter(

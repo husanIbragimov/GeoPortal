@@ -6,7 +6,7 @@ from pymongo import MongoClient
 class MongoDB:
     def __init__(self, collection_name):
         self.client = MongoClient('localhost', 27017)
-        self.db = self.client["src"]
+        self.db = self.client["app"]
         self.collection = self.db[collection_name]
 
     def insert(self, data):

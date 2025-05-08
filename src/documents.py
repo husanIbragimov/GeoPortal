@@ -1,6 +1,6 @@
 from typing import Dict, Any, List
 
-from src.db.mongo_db import MongoDB
+from db.mongo_db import MongoDB
 
 
 class Document:

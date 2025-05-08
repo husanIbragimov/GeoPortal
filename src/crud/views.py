@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
-from src.models.sphere import Sphere
-from src.schemas.spheres import SphereCreateSchema
+from models.sphere import Sphere
+from schemas.spheres import SphereCreateSchema
 
 
 def create_sphere(db: Session, sphere: SphereCreateSchema):

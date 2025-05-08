@@ -1,10 +1,9 @@
 import fastapi
 
-from src.api.dependencies import (
+from api.dependencies import (
     auth,
-    spheres,
-    coordinates,
 )
+from api.dependencies import coordinates, spheres
 
 router = fastapi.APIRouter()
 

@@ -139,6 +139,7 @@ class LoadGeoJsonToMD:
         self.districts_collection = self.db["districts"]
         self.regions_collection = self.db["regions"]
 
+
     def insert_geojson(self):
         self.districts_collection.delete_many({})
         self.regions_collection.delete_many({})
