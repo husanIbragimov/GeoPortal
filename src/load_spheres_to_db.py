@@ -6,7 +6,7 @@ import requests
 from pymongo import MongoClient
 from sqlalchemy import create_engine
 
-from src.core.config import settings
+from core.config import settings, ROOT_DIR
 
 
 class LoadSpheresToDB:
@@ -134,7 +134,7 @@ class LoadSpheresToDB:
 class LoadGeoJsonToMD:
     def __init__(self):
         # MongoDB connection setup
-        self.conn = MongoClient('localhost', 27017)
+        self.conn = MongoClient('mongodb', 27017)
         self.db = self.conn["gis"]
         self.districts_collection = self.db["districts"]
         self.regions_collection = self.db["regions"]
@@ -144,10 +144,9 @@ class LoadGeoJsonToMD:
         self.districts_collection.delete_many({})
         self.regions_collection.delete_many({})
 
-        district_path = "data/gis.districts.json"
+        district_path = f"{ROOT_DIR}/data/gis.districts.json"
         file_df = pd.read_json(district_path)
-
-        regions_path = "data/gis.regions.json"
+        regions_path = f"{ROOT_DIR}/data/gis.regions.json"
         regions_df = pd.read_json(regions_path)
 
         # Insert districts data, removing the '_id' field if it's invalid

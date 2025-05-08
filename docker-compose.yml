@@ -29,7 +29,6 @@ services:
       - ./src:/app/src
       - ./alembic:/app/alembic
       - ./data:/app/data
-      - ./load_spheres_to_db.py:/app/load_spheres_to_db.py
     ports:
       - "8010:8000"
     env_file:

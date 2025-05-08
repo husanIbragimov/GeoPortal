@@ -24,7 +24,7 @@ class Sphere(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=True)
-    parent_id = Column(Integer, ForeignKey('spheres.id'), nullable=True)
+    parent_id = Column(Integer, ForeignKey('spheres.id'), nullable=True, index=True)
     icon = Column(String, nullable=True)
     icon_light = Column(String, nullable=True)
     is_active = Column(Boolean, default=True)
