@@ -166,3 +166,4 @@ data/Tuman_27_03_2024.geojson
 /data/gis.districts.json
 /data/gis.regions.json
 .volumes
+docker-compose.override.yml
