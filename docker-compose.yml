@@ -1,19 +1,5 @@
 services:
 
-  nginx:
-    image: nginx:1.27
-    networks:
-      - shared_network
-    ports:
-      - "8001:80"
-    volumes:
-      - ./.conf/docker-nginx.conf:/etc/nginx/nginx.conf
-      - ./static:/app/static
-      - ./media:/app/media
-
-    depends_on:
-      - web
-
   web:
     build: .
     container_name: fastapi
