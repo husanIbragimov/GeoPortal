@@ -169,16 +169,16 @@ class LoadGeoJsonToMD:
 
 
 if __name__ == "__main__":
-    load_spheres = LoadSpheresToDB()
-    load_spheres.reset_truncate_identities()
+    # load_spheres = LoadSpheresToDB()
+    # load_spheres.reset_truncate_identities()
     print("Reset identities")
-    load_spheres.get_load_json_to_db()
+    # load_spheres.get_load_json_to_db()
     print("Load spheres")
-    load_spheres.delete_empty_and_not_soato()
+    # load_spheres.delete_empty_and_not_soato()
     print("Delete empty and not soato")
-    load_spheres.update_icon_colors("#003985", "#ffffff")
+    # load_spheres.update_icon_colors("#003985", "#ffffff")
     print("Update colors")
-    load_spheres.close()
+    # load_spheres.close()
     load_geo = LoadGeoJsonToMD()
     load_geo.insert_geojson()
     print("Success")
